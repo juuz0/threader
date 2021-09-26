@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import FormInput from "./FormInput";
+import TweetText from "./TweetText";
 
 function App() {
   const [linkStatus, setlinkStatus] = useState("blank");
@@ -8,9 +9,10 @@ function App() {
   async function changeLinkStatus(params) {
     const newStatus = params; // do computation here
     fetch(`/getTweets?link=${params}`)
-    .then(response => response.json())
-    .then(data => setTweets(data)).catch(e => setlinkStatus('bad'));
-  
+      .then((response) => response.json())
+      .then((data) => setTweets(data))
+      .catch((e) => setlinkStatus("bad"));
+
     console.log(newStatus);
   }
   function displayContent(params) {
@@ -18,9 +20,13 @@ function App() {
     if (linkStatus === "bad") {
       content = <h1>Bad link!</h1>;
     } else {
-      content = <div>
-        {tweets.map(tweet => <h1>{tweet.text}</h1>)}
-      </div>
+      content = (
+        <div style={{ width: "42vw", margin: "auto" }}>
+          {tweets.map((tweet) => (
+            <TweetText tweet={tweet} />
+          ))}
+        </div>
+      );
     }
     return content;
   }

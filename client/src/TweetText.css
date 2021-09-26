@@ -1,0 +1,15 @@
+.tweet {
+    white-space: pre-wrap;
+    width: 40vw;
+    height: auto;
+    padding: 10px;
+    font-size: 20px;
+    text-align: justify;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: darkgrey;
+    line-height: 200%;
+}
+
+.tweet:hover{
+    background-color: azure;
+}

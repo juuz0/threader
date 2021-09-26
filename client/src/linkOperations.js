@@ -55,19 +55,27 @@ async function getRequest(id, endpointUrl) {
   const params = {
     query: `from:${username} conversation_id:${id}`,
     "tweet.fields": "author_id,conversation_id,in_reply_to_user_id",
-     "max_results":100
+    max_results: 100,
   };
   const mParams = {
-    ids:`${id}`,
-    "tweet.fields": "author_id,conversation_id,in_reply_to_user_id"
-  }
-  let mainTweet = await getResponse("https://api.twitter.com/2/tweets", mParams);
+    ids: `${id}`,
+    "tweet.fields": "author_id,conversation_id,in_reply_to_user_id",
+  };
+  let mainTweet = await getResponse(
+    "https://api.twitter.com/2/tweets",
+    mParams
+  );
   mainTweet = mainTweet.data[0];
   const resp = await getResponse(endpointUrl, params);
   let filteredResp = resp.data.filter((response) => {
     return response.in_reply_to_user_id === userid;
   });
   filteredResp = [...filteredResp, mainTweet];
+  filteredResp.reverse();
+  filteredResp.forEach((element) => {
+  //  var re = new RegExp(element, "https://t.co/.+\s");
+    element.text.replace('https://t.co/rETQqTOc5t', 'kekw');
+  });
   return filteredResp;
 }
 
