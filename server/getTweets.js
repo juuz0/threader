@@ -1,5 +1,5 @@
 import express from "express";
-import getTweets from "../client/src/linkOperations.js";
+import getTweets from "./linkOperations.js";
 const app = express();
 const port = 3001;
 

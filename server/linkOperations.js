@@ -2,20 +2,18 @@ import needle from "needle";
 
 const token =
   "AAAAAAAAAAAAAAAAAAAAACbnTwEAAAAAi5lpAu76FoxUyjjoKxXtj0z5EZI%3DuRykufKzVgyuLlfXjsZMEiJCzNp7uKVRksY4keS3zhRM50VVPH";
-// const link = "https://twitter.com/SkySportsNews/status/1441385906645225472";
 
 async function getTweets(link) {
-  const id = link.match("status/([0-9]+)*")[1];
   const endpointUrl = "https://api.twitter.com/2/tweets/search/recent";
+
   try {
+    const id = link.match("status/([0-9]+)*")[1];
     const response = await getRequest(id, endpointUrl);
-    console.log(response);
     return response;
   } catch (e) {
     console.log(e);
   }
 }
-// getTweets("https://twitter.com/Krishn_aGupta/status/1441755722409136132");
 async function getResponse(endpointUrl, params) {
   const res = await needle("get", endpointUrl, params, {
     headers: {
@@ -40,26 +38,62 @@ async function getUserFromTweetId(id) {
   };
   const res = await getResponse("https://api.twitter.com/2/tweets", params);
   if (res.includes) {
-    // console.log(res.includes.users[0]);
     return res.includes.users[0];
   } else {
     throw new Error("Bad link");
   }
 }
 
+async function getPfp(username) {
+  const endPt = `https://api.twitter.com/1.1/users/show.json`;
+  const params = {
+    screen_name: username,
+  };
+  const res = await needle("get", endPt, params, {
+    headers: {
+      "User-Agent": "v2RecentSearchJS",
+      authorization: `Bearer ${token}`,
+    },
+  });
+  return res.body.profile_image_url.slice(0, -10) + "bigger.jpg";
+}
+
+async function getImages(id) {
+  let images = [];
+  const params = {
+    ids: id,
+    expansions: "attachments.media_keys",
+    "media.fields": "url",
+  };
+  const endPoint = "https://api.twitter.com/2/tweets";
+  const resp = await getResponse(endPoint, params);
+  if (resp.includes) {
+    for (const mediaObj of resp.includes.media) {
+      if (mediaObj.url != undefined) images.push(mediaObj.url);
+    }
+  }
+  return images;
+}
+
 async function getRequest(id, endpointUrl) {
+  let images = [];
   const user = await getUserFromTweetId(id);
   const username = user.username;
+  const pfpUrl = await getPfp(username);
   const userid = user.id;
   console.log(username, userid);
   const params = {
     query: `from:${username} conversation_id:${id}`,
-    "tweet.fields": "author_id,conversation_id,in_reply_to_user_id",
+    "tweet.fields": "author_id,conversation_id,in_reply_to_user_id,attachments",
+    "media.fields": "url,height,preview_image_url",
+    expansions: "attachments.media_keys",
     max_results: 100,
   };
   const mParams = {
     ids: `${id}`,
-    "tweet.fields": "author_id,conversation_id,in_reply_to_user_id",
+    "tweet.fields": "author_id,conversation_id,in_reply_to_user_id,attachments",
+    "media.fields": "url,height,preview_image_url",
+    expansions: "attachments.media_keys",
   };
   let mainTweet = await getResponse(
     "https://api.twitter.com/2/tweets",
@@ -72,11 +106,18 @@ async function getRequest(id, endpointUrl) {
   });
   filteredResp = [...filteredResp, mainTweet];
   filteredResp.reverse();
-  filteredResp.forEach((element) => {
-  //  var re = new RegExp(element, "https://t.co/.+\s");
-    element.text.replace('https://t.co/rETQqTOc5t', 'kekw');
-  });
-  return filteredResp;
+  filteredResp = await Promise.all(
+    filteredResp.map(async (element) => {
+      element["images"] = await getImages(element.id);
+      return Promise.resolve(element);
+    })
+  );
+  console.log(filteredResp);
+  return {
+    username,
+    pfpUrl,
+    filteredResp,
+  };
 }
 
 export default getTweets;
