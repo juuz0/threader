@@ -38,11 +38,11 @@ function App() {
         </div>
       );
     } else if (linkStatus === "bad") {
-      content = <h1>Bad link!</h1>;
+      content = (<div className="w-screen h-screen justify-items items-center text-9xl"><span>F <br/> Wrong Link.</span></div>);
     } else {
       content = (
         <div>
-          <header className="App-header">Twitter Threader</header>
+          <header className="App-header">Thread 2 Article</header>
           <div className="p-6 md:container md:mx-auto mt-8 md:my-8 mx-auto shadow-xl flex flex-col flex-wrap text-left justify-center space-y-8 w-1/2 h-4/5 items-start border-2 border-gray-300 font-sans w-full sm:w-full lg:w-1/2">
             <div className="flex flex-row space-x-8 justify-center items-center">
               <img
