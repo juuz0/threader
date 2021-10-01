@@ -1,7 +1,7 @@
 import needle from "needle";
 
-const token = process.env.token;
-
+const token = process.env.TOKEN;
+console.log(token);
 async function getTweets(link) {
   const endpointUrl = "https://api.twitter.com/2/tweets/search/recent";
 

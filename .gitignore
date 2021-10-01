@@ -11,7 +11,7 @@ config.js
 /coverage
 
 # production
-server/client/build
+client/build
 
 # misc
 .DS_Store
