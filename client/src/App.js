@@ -29,7 +29,7 @@ function App() {
       content = (
         <div className="flex flex-col lg:flex-row w-screen h-screen justify-items items-center ">
           <div className="text-lg lg:text-6xl w-full jusitfy-items align-center font-mono">
-            Thread 2 Article <br />
+            Threader <br />
             <span className="text-sm lg:text-lg font-sans">
               Type a valid twitter URL in the text field and Thread.
             </span>
@@ -42,7 +42,7 @@ function App() {
     } else {
       content = (
         <div>
-          <header className="App-header">Thread 2 Article</header>
+          <header className="App-header">Threader</header>
           <div className="p-6 md:container md:mx-auto mt-8 md:my-8 mx-auto shadow-xl flex flex-col flex-wrap text-left justify-center space-y-8 w-1/2 h-4/5 items-start border-2 border-gray-300 font-sans w-full sm:w-full lg:w-1/2">
             <div className="flex flex-row space-x-8 justify-center items-center">
               <img
