@@ -20,8 +20,7 @@ async function getResponse(endpointUrl, params) {
       authorization: `Bearer ${token}`,
     },
   });
-
-  if (res.body) {
+  if (res) {
     return res.body;
   } else {
     throw new Error("Unsuccessful request");
@@ -44,17 +43,14 @@ async function getUserFromTweetId(id) {
 }
 
 async function getPfp(username) {
-  const endPt = `https://api.twitter.com/1.1/users/show.json`;
-  const params = {
-    screen_name: username,
-  };
-  const res = await needle("get", endPt, params, {
+  const endPt = `https://api.twitter.com/2/users/by?usernames=${username}&user.fields=profile_image_url`;
+  const res = await needle("get", endPt, {
     headers: {
       "User-Agent": "v2RecentSearchJS",
       authorization: `Bearer ${token}`,
     },
   });
-  return res.body.profile_image_url.slice(0, -10) + "bigger.jpg";
+  return res.body.data[0].profile_image_url.slice(0, -10) + "bigger.jpg";
 }
 
 async function getImages(id) {
@@ -80,7 +76,6 @@ async function getRequest(id, endpointUrl) {
   const username = user.username;
   const pfpUrl = await getPfp(username);
   const userid = user.id;
-  console.log(username, userid);
   const params = {
     query: `from:${username} conversation_id:${id}`,
     "tweet.fields": "author_id,conversation_id,in_reply_to_user_id,attachments",
@@ -111,7 +106,6 @@ async function getRequest(id, endpointUrl) {
       return Promise.resolve(element);
     })
   );
-  console.log(filteredResp);
   return {
     username,
     pfpUrl,
